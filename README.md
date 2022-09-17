@@ -4,11 +4,6 @@ Counting the number of Txs per block for the RAC community.
 
 [Twitter Post](https://twitter.com/Reecepbcups_/status/1571109060963078145?s=20&t=5fPdMu3FWXoCg_qHOT3pEw)
 
-DISCLAIMER:
-- Roughly 2000 blocks of data were lost due to httpx client timeout. This is less than 1% of blocks.
-- This means another ~30k Txs could be added to junos total tally.
-- Racoon Supply would maybe see a few hundred more Txs during this same time.
-
 Solution:
 - Use RPC / REST to query every block.
 - Saves every XXXXX blocks to a JSON file with the data we want, using height as the key.
