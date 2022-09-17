@@ -1,41 +1,41 @@
-python3 main.py 4845300 1000 &
-python3 main.py 4835300 1000 &
-# python3 main.py 4825300 10000 &
-# python3 main.py 4815300 10000 &
-# python3 main.py 4805300 10000 &
-# python3 main.py 4795300 10000 &
-# python3 main.py 4785300 10000 &
-# python3 main.py 4775300 10000 &
-# python3 main.py 4765300 10000 &
-# python3 main.py 4755300 10000 &
-# python3 main.py 4745300 10000 &
-# python3 main.py 4735300 10000 &
-# python3 main.py 4725300 10000 &
-# python3 main.py 4715300 10000 &
-# python3 main.py 4705300 10000 &
-# python3 main.py 4695300 10000 &
-# python3 main.py 4685300 10000 &
-# python3 main.py 4675300 10000 &
-# python3 main.py 4665300 10000 &
-# python3 main.py 4655300 10000 &
-# python3 main.py 4645300 10000 &
-# python3 main.py 4635300 10000 &
-# python3 main.py 4625300 10000 &
-# python3 main.py 4615300 10000 &
-# python3 main.py 4605300 10000 &
-# python3 main.py 4595300 10000 &
-# python3 main.py 4585300 10000 &
-# python3 main.py 4575300 10000 &
-# python3 main.py 4565300 10000 &
-# python3 main.py 4555300 10000 &
-# python3 main.py 4545300 10000 &
-# python3 main.py 4535300 10000 &
-# python3 main.py 4525300 10000 &
-# python3 main.py 4515300 10000 &
-# python3 main.py 4505300 10000 &
-# python3 main.py 4495300 10000 &
-# python3 main.py 4485300 10000 &
-# python3 main.py 4475300 10000 &
-# python3 main.py 4465300 10000 &
-# python3 main.py 4455300 10000 &
-# python3 main.py 4445300 10000 &
+python3 main.py 4845000 10000 &
+python3 main.py 4835000 10000 &
+python3 main.py 4825000 10000 &
+python3 main.py 4815000 10000 &
+python3 main.py 4805000 10000 &
+python3 main.py 4795000 10000 &
+python3 main.py 4785000 10000 &
+python3 main.py 4775000 10000 &
+python3 main.py 4765000 10000 &
+python3 main.py 4755000 10000 &
+python3 main.py 4745000 10000 &
+python3 main.py 4735000 10000 &
+python3 main.py 4725000 10000 &
+python3 main.py 4715000 10000 &
+python3 main.py 4705000 10000 &
+python3 main.py 4695000 10000 &
+python3 main.py 4685000 10000 &
+python3 main.py 4675000 10000 &
+python3 main.py 4665000 10000 &
+python3 main.py 4655000 10000 &
+python3 main.py 4645000 10000 &
+python3 main.py 4635000 10000 &
+python3 main.py 4625000 10000 &
+python3 main.py 4615000 10000 &
+python3 main.py 4605000 10000 &
+python3 main.py 4595000 10000 &
+python3 main.py 4585000 10000 &
+python3 main.py 4575000 10000 &
+python3 main.py 4565000 10000 &
+python3 main.py 4555000 10000 &
+python3 main.py 4545000 10000 &
+python3 main.py 4535000 10000 &
+python3 main.py 4525000 10000 &
+python3 main.py 4515000 10000 &
+python3 main.py 4505000 10000 &
+python3 main.py 4495000 10000 &
+python3 main.py 4485000 10000 &
+python3 main.py 4475000 10000 &
+python3 main.py 4465000 10000 &
+python3 main.py 4455000 10000 &
+python3 main.py 4445000 10000 &

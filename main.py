@@ -99,7 +99,7 @@ def get_latest_height():
     return height
 
 def get_block(height):
-    # TODO: try catch if fail
+    # TODO: try catch if fail, read timeout
     resp = client.get(f"{RPC}/block?height={height}")
     return resp.json()["result"]["block"]
 
