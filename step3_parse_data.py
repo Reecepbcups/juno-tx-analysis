@@ -20,27 +20,32 @@ MSGS = {
     "cosmos.staking.v1beta1.MsgBeginRedelegate": {},
     "cosmos.authz.v1beta1.MsgExec": {},
     "cosmos.authz.v1beta1.MsgGrant": {},
-    "cosmos.gov.v1beta1.MsgSubmitProposal": {},
-    "cosmos.gov.v1beta1.MsgDeposit": {},
+    
     
     "cosmwasm.wasm.v1.MsgInstantiateContract": {},
     "cosmwasm.wasm.v1.MsgMigrateContract": {},
     "cosmwasm.wasm.v1.MsgExecuteContract": {},
-    "cosmos.staking.v1beta1.MsgCreateValidator": {},
-    "cosmos.staking.v1beta1.MsgEditValidator": {},
+    
     "cosmos.bank.v1beta1.MsgSend": {},
-    "cosmos.slashing.v1beta1.MsgUnjail": {},
     
     "ibc.applications.transfer.v1.MsgTransfer": {},
-    "ibc.core.channel.v1.MsgChannelOpenAck": {},
-    "ibc.core.channel.v1.MsgChannelOpenInit": {},
-    "ibc.core.client.v1.MsgCreateClient": {},
+    
     "other": {},
 }
 
 IGNORED = {
     "ibc.core.client.v1.MsgUpdateClient": {},
     "cosmwasm.wasm.v1.MsgStoreCode": {},
+    "cosmos.staking.v1beta1.MsgCreateValidator": {},
+    "cosmos.staking.v1beta1.MsgEditValidator": {},
+    "cosmos.slashing.v1beta1.MsgUnjail": {},
+
+    "ibc.core.channel.v1.MsgChannelOpenAck": {},
+    "ibc.core.channel.v1.MsgChannelOpenInit": {},
+    "ibc.core.client.v1.MsgCreateClient": {},
+
+    "cosmos.gov.v1beta1.MsgSubmitProposal": {},
+    "cosmos.gov.v1beta1.MsgDeposit": {},
 }
 
 all_data = os.path.join(current_dir, 'all_data.json')

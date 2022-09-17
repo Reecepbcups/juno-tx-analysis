@@ -11,21 +11,6 @@ client = httpx.Client()
 
 current_dir = os.path.dirname(os.path.realpath(__file__))
 
-# Pulled from racoon.bet RPC queries via inspect element
-list_of_racoon_contracts = {
-    # Dungeon
-    "juno1ft5nuq4ck8ucwaunv0l064e22gw4lndexswqu5772mslgvf43ymqsgxznw": "DungeonV1",  
-    "juno1an55u6dmsuw9etmyw3pccjn2qm4uddnyu4c6yusc8y5mdf77yjlq9p4k9y": "Dungeon V2",  
-    # Lotto  
-    "juno1mpufvc3j6v2zc2959lf838lnfv80c3hscgpfzqzkezyeceth9z6s37yeck": "LottoV1",
-    "juno1sr4d0lq5njnfs0l59u92cerhr24zkczysxft4rvaas6gw3zt9lhqju02x4": "LottoV2",  
-    "juno1r4pzw8f9z0sypct5l9j906d47z998ulwvhvqe5xdwgy8wf84583sxwh0pa": "Lottery Buy Ticket Rac",
-    # dice
-    "juno1xkvhguzrectvswn6f20t4gggs8wl70sj2rd5rt3trl73fjn8666qer96u0": "DiceV1",
-    "juno18hsatg55uk7sf2hm0j36402aej729g395egq9rt5rjvz7gazdfcss9egmd": "Dice V2",
-    # slots (excludes empowered spin Txs)
-    "juno1wgkhhyf5zg2pxfxfzmq7rtx7jx5r294m2kudq3vqktfua5jay6xs04375w": "Slots",
-}
 
 # TOTAL_RAC_TXS = 0
 TOTAL_JUNO_TXS = 0
