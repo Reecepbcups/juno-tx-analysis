@@ -27,7 +27,7 @@ MSGS = {
     "cosmos.authz.v1beta1.MsgGrant": {},
     "cosmos.gov.v1beta1.MsgSubmitProposal": {},
     "cosmos.gov.v1beta1.MsgDeposit": {},
-    "cosmwasm.wasm.v1.MsgStoreCode": {},
+    
     "cosmwasm.wasm.v1.MsgInstantiateContract": {},
     "cosmwasm.wasm.v1.MsgMigrateContract": {},
     "cosmwasm.wasm.v1.MsgExecuteContract": {},
@@ -35,12 +35,17 @@ MSGS = {
     "cosmos.staking.v1beta1.MsgEditValidator": {},
     "cosmos.bank.v1beta1.MsgSend": {},
     "cosmos.slashing.v1beta1.MsgUnjail": {},
-    "ibc.core.client.v1.MsgUpdateClient": {},
+    
     "ibc.applications.transfer.v1.MsgTransfer": {},
     "ibc.core.channel.v1.MsgChannelOpenAck": {},
     "ibc.core.channel.v1.MsgChannelOpenInit": {},
     "ibc.core.client.v1.MsgCreateClient": {},
     "other": {},
+}
+
+IGNORED = {
+    "ibc.core.client.v1.MsgUpdateClient": {},
+    "cosmwasm.wasm.v1.MsgStoreCode": {},
 }
 
 # FINAL_DATA = {}
@@ -73,7 +78,7 @@ with open(all_data, 'rb') as f:
 
             wasFound = False
             for msg_type in MSGS.keys():
-                if msg_type in decoded_tx:
+                if msg_type in decoded_tx and msg_type not in IGNORED.keys():
                     # FINAL_DATA[msg_type][height] = FINAL_DATA.get(msg_type, {}).get(height, {}) + [tx]                
                     height_txs[msg_type] = height_txs.get(msg_type, []) + [tx]
                     wasFound = True
@@ -128,6 +133,8 @@ if not os.path.exists(msgs_dir):
     os.makedirs(msgs_dir, exist_ok=True)
 
 for msg_type in MSGS.keys():
+    if msg_type in IGNORED.keys(): 
+        continue
     with open(os.path.join(current_dir, msgs_dir, msg_type + ".json"), 'w') as f:
         print('Dumping ' + msg_type + ' to ' + os.path.join(current_dir, msgs_dir, msg_type + ".json") + '...')
         json.dump(MSGS[msg_type], f, indent=4)
