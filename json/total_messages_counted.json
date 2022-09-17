@@ -1,0 +1,23 @@
+{
+    "total": 1221567,
+    "cosmos.staking.v1beta1.MsgEditValidator.json": 17,
+    "cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward.json": 252642,
+    "cosmos.staking.v1beta1.MsgDelegate.json": 172595,
+    "cosmos.authz.v1beta1.MsgGrant.json": 2070,
+    "cosmos.gov.v1beta1.MsgSubmitProposal.json": 2,
+    "cosmos.slashing.v1beta1.MsgUnjail.json": 6,
+    "other.json": 121783,
+    "ibc.core.client.v1.MsgCreateClient.json": 20,
+    "ibc.applications.transfer.v1.MsgTransfer.json": 61643,
+    "cosmos.bank.v1beta1.MsgSend.json": 52246,
+    "cosmos.gov.v1beta1.MsgDeposit.json": 18,
+    "cosmos.authz.v1beta1.MsgExec.json": 32,
+    "cosmos.staking.v1beta1.MsgUndelegate.json": 4678,
+    "cosmos.staking.v1beta1.MsgCreateValidator.json": 7,
+    "cosmwasm.wasm.v1.MsgMigrateContract.json": 25,
+    "cosmwasm.wasm.v1.MsgInstantiateContract.json": 508,
+    "ibc.core.channel.v1.MsgChannelOpenAck.json": 5,
+    "ibc.core.channel.v1.MsgChannelOpenInit.json": 5,
+    "cosmos.staking.v1beta1.MsgBeginRedelegate.json": 8492,
+    "cosmwasm.wasm.v1.MsgExecuteContract.json": 544773
+}
