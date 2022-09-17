@@ -27,7 +27,7 @@ list_of_racoon_contracts = {
     "juno1wgkhhyf5zg2pxfxfzmq7rtx7jx5r294m2kudq3vqktfua5jay6xs04375w": "Slots",
 }
 
-TOTAL_RAC_TXS = 0
+# TOTAL_RAC_TXS = 0
 TOTAL_JUNO_TXS = 0
 data = {} # int(height) = {other_data_here}
 
@@ -42,11 +42,19 @@ def main():
     spread = int(sys.argv[2]) #10k
 
     os.makedirs(os.path.join(current_dir, "data"), exist_ok=True)
+
+    save_per = 500
+    if spread < save_per:
+        save_per = spread
     
     # loop through blocks backwards from latest to LOWEST_HEIGHT
     # for idx, block_h in enumerate(range(latest, LOWEST_HEIGHT, -1)):    
     for idx, block_h in enumerate(range(start, start-spread, -1)):     
-        if idx % (spread/10) == 0:            
+        if idx % (save_per) == 0:            
+            if len(data) == 0:
+                # print(f"{block_h} was empty")
+                pass
+            else:
                 with open(os.path.join(current_dir, "data", f"blocks_{block_h}.json"), "w") as f:
                     json.dump(data, f, indent=4)
                     data = {}
@@ -55,39 +63,46 @@ def main():
 
 
 def get_block_data(height):
-    global TOTAL_RAC_TXS, TOTAL_JUNO_TXS, data    
+    # global TOTAL_RAC_TXS
+    global TOTAL_JUNO_TXS, data    
     block = get_block(height)
+
+    if block == -2: # height too low
+        return
+    if block == -1: # error getting block
+        return
+
     get_time = block["header"]["time"]
     txs = block["data"]["txs"]
     num_txs = len(txs)
     # print(f"Block {height} has {num_txs} transactions. Time: {get_time}")
 
-    before_rac_txs = TOTAL_RAC_TXS
+    # before_rac_txs = TOTAL_RAC_TXS
     contracts_in_block = {}
 
     # loop through txs, and decode base64
-    for tx in txs:
-        TOTAL_JUNO_TXS += 1
-        decoded = str(base64.b64decode(tx))
+    TOTAL_JUNO_TXS += num_txs
 
-        # check if any list_of_racoon_contracts keys are in the decoded tx
-        for key in list_of_racoon_contracts:
-            if key in decoded:
-                TOTAL_RAC_TXS += 1                
-                contracts_in_block[key] = contracts_in_block.get(key, 0) + 1
-                # print(f"Found {key} in {decoded}")
+    # for tx in txs:
+    #     TOTAL_JUNO_TXS += 1
+    #     decoded = str(base64.b64decode(tx))
+    #     # check if any list_of_racoon_contracts keys are in the decoded tx
+    #     for key in list_of_racoon_contracts:
+    #         if key in decoded:
+    #             TOTAL_RAC_TXS += 1                
+    #             contracts_in_block[key] = contracts_in_block.get(key, 0) + 1
+    #             # print(f"Found {key} in {decoded}")
 
-    after = TOTAL_RAC_TXS - before_rac_txs
+    # after = TOTAL_RAC_TXS - before_rac_txs
 
     data[height] = {
         "time": get_time,
         "num_txs": num_txs,
-        "rac_txs": after,
-        "contract_addrs": contracts_in_block   
+        "juno_txs": txs, # base64 encoded
     }
 
-    if height % 250 == 0:
-        print(f"[{height}] RacTXs So Far: {TOTAL_RAC_TXS}. Total Juno: {TOTAL_JUNO_TXS}")
+    if height % 500 == 0:
+        print(f"[{height}] Total Juno: {TOTAL_JUNO_TXS}")
 
 
 # == RPC Logic ==
@@ -98,10 +113,18 @@ def get_latest_height():
     height = height - (height % 100)
     return height
 
-def get_block(height):
-    # TODO: try catch if fail, read timeout
-    resp = client.get(f"{RPC}/block?height={height}")
-    return resp.json()["result"]["block"]
+def get_block(height) -> int:
+    if height < LOWEST_HEIGHT:
+        # print("Height too low")
+        return -2
+
+    try:
+        resp = client.get(f"{RPC}/block?height={height}")
+        return resp.json()["result"]["block"]
+    except Exception as e:
+        # print(f"Error getting block {height}")
+        # print(f"Error getting block {height}. {e}")
+        return -1
 
 
 if __name__ == "__main__":
