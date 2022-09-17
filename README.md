@@ -2,7 +2,7 @@
 (Since block)
 Counting the number of Txs per block for the RAC community.
 
-(Twitter Post)[https://twitter.com/Reecepbcups_/status/1571109060963078145?s=20&t=5fPdMu3FWXoCg_qHOT3pEw]
+[Twitter Post](https://twitter.com/Reecepbcups_/status/1571109060963078145?s=20&t=5fPdMu3FWXoCg_qHOT3pEw)
 
 DISCLAIMER:
 - Roughly 2000 blocks of data were lost due to httpx client timeout. This is less than 1% of blocks.
