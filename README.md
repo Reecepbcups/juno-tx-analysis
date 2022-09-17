@@ -1,5 +1,5 @@
 ## juno-txs
-Counting number of Txs per block for the RAC community asked me too.
+Counting number of Txs per block for the RAC community.
 
 Solution:
 - Use RPC / REST to query every block.
