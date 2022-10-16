@@ -24,7 +24,10 @@ data = {} # int(height) = {other_data_here}
 
 
 def run_cmd(cmd) -> str:
-    return subprocess.Popen(cmd, shell=True, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).stdout.read()
+    # return subprocess.Popen(cmd, shell=True, text=False, stdout=subprocess.PIPE).stdout.read()
+    # return subprocess.run(cmd, shell=True, text=True, capture_output=True).stdout
+    return os.popen(cmd).read()    
+
 
 # ensure junod is installed
 version = run_cmd("junod version")
@@ -61,7 +64,8 @@ def main():
                     print(f"Saved {block_h}")
         get_block_data(block_h)        
 
-
+import multiprocessing as mp
+p = mp.Pool(mp.cpu_count())
 
 def get_block_data(height):
     global TOTAL_JUNO_TXS, data    
@@ -80,21 +84,25 @@ def get_block_data(height):
     # loop through txs, and decode base64
     TOTAL_JUNO_TXS += num_txs
 
-    human_txs = []
-    for tx in txs:
+    human_txs = []    
+    for tx in txs:        
         try:
-            tx_json = run_cmd(f"junod tx decode {tx} --output json")         
-            human_txs.append(json.loads(tx_json))
-        except Exception as e:
+            tx_json = json.loads(run_cmd(f"junod tx decode {tx} --output json"))            
+            messages = tx_json['body']["messages"]            
+            for msg in messages:        
+                if "/ibc.core.client.v1.MsgUpdateClient" in msg["@type"]: # skip these
+                    continue
+                human_txs.append(msg)          
+        except:
             # argument list too long = store code
-            # input(f"Error decoding tx {tx}. {e}")
-            continue
+            # input(f"Error decoding tx {tx}. {e}")            
+            pass   
 
     # after = TOTAL_RAC_TXS - before_rac_txs
     data[height] = {
         "time": get_time,
         "num_txs": num_txs,        
-        "decoded_txs": human_txs,
+        "decoded_txs": human_txs, # does this work?
     }
 
     if height % HEIGHT_DATA_GROUPINGS == 0:
@@ -115,9 +123,8 @@ def get_block(height) -> int:
         return -2
 
     try:
-        resp = client.get(f"{RPC}/block?height={height}")
-        block_data = resp.json()["result"]["block"]
-        return block_data
+        resp = client.get(f"{RPC}/block?height={height}")        
+        return resp.json()["result"]["block"]
     except Exception as e:
         # print(f"Error getting block {height}")
         # print(f"Error getting block {height}. {e}")

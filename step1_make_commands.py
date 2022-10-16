@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 lowest_height = int(os.getenv("LOWEST_BLOCK_HEIGHT"))
-end_height = lowest_height+10_000
+end_height = lowest_height+1_000
 spread = int(os.getenv("HEIGHT_DATA_GROUPINGS", 500))
 
 # loop between start and end height and make the commands
