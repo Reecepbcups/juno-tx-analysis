@@ -79,15 +79,12 @@ range_jumps = 5_000
 range_jumps = int((highest_height-lowest_height+1)*0.025) # maybe take a % of the highest height - lowest height
 
 for msg_type, heights_data in total_messages.items():
+    # heights_data => {'4801196': 1, '4801189': 1, '4800030': 1}
     name = msg_type.replace(".json", "")
-    # {'4801196': 1, '4801189': 1, '4800030': 1}
     # sorted_heights = sorted(v.keys(), key=lambda x: x[0])
     # print(sorted_heights)
-    if len(heights_data.keys()) == 0:
-        continue
-
-    if name not in SHOW_SPECIFIC_MSGS:
-        continue
+    if len(heights_data.keys()) == 0: continue
+    if name not in SHOW_SPECIFIC_MSGS: continue
 
     all_txs = {k: 0 for k in range(lowest_height, highest_height, range_jumps)}
 
@@ -103,7 +100,7 @@ for msg_type, heights_data in total_messages.items():
     # exit()
     
     plt.plot(all_txs.keys(), all_txs.values(), label=name)    
-    plt.legend(loc='upper left')
+    plt.legend(loc='upper right')
     plt.title(f'Juno Txs By Type')
     plt.xlabel('Block height (* 1 million)')
     plt.ylabel('Txs Over Time')    
