@@ -6,6 +6,28 @@ from cProfile import label
 import os, json
 import matplotlib.pyplot as plt
 
+# Comment out lines you do not want to show / count
+SHOW_SPECIFIC_MSGS = [
+    # "cosmwasm.wasm.v1.MsgStoreCode",
+    # "cosmos.staking.v1beta1.MsgEditValidator",
+    # "cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward",
+    "cosmos.staking.v1beta1.MsgDelegate",
+    "cosmos.authz.v1beta1.MsgGrant",
+    "ibc.core.channel.v1.MsgAcknowledgement",
+    "ibc.applications.transfer.v1.MsgTransfer",
+    "cosmos.bank.v1beta1.MsgSend",
+    "cosmos.authz.v1beta1.MsgExec",
+    # "cosmos.distribution.v1beta1.MsgWithdrawValidatorCommission",
+    "cosmos.staking.v1beta1.MsgUndelegate",
+    "cosmos.authz.v1beta1.MsgRevoke",
+    "ibc.core.channel.v1.MsgRecvPacket",
+    # "cosmwasm.wasm.v1.MsgInstantiateContract",
+    "cosmos.staking.v1beta1.MsgBeginRedelegate",
+    "cosmwasm.wasm.v1.MsgExecuteContract"
+]
+# v = [v.replace(".json", "") for v in total_messages.keys()] # <- generate above with this
+# input(json.dumps(v, indent=4))
+
 # loop through all msgs folder
 current_dir = os.path.dirname(os.path.realpath(__file__))
 total_msgs_file = f"{current_dir}/json/total_messages.json"
@@ -51,18 +73,20 @@ with open(total_msgs_file, "w") as f:
     json.dump(total_messages, f)
 
 # exit()
-# TODO calu
 
 final_output = {}
-# lowlow = 4_450_000
-# highhigh = 4_850_000
-range_jumps = 5_000 # maybe take a % of the highest height - lowest height
+range_jumps = 5_000
+range_jumps = int((highest_height-lowest_height+1)*0.025) # maybe take a % of the highest height - lowest height
 
 for msg_type, heights_data in total_messages.items():
+    name = msg_type.replace(".json", "")
     # {'4801196': 1, '4801189': 1, '4800030': 1}
     # sorted_heights = sorted(v.keys(), key=lambda x: x[0])
     # print(sorted_heights)
     if len(heights_data.keys()) == 0:
+        continue
+
+    if name not in SHOW_SPECIFIC_MSGS:
         continue
 
     all_txs = {k: 0 for k in range(lowest_height, highest_height, range_jumps)}
@@ -71,19 +95,17 @@ for msg_type, heights_data in total_messages.items():
         # find the closest key to k
         closest_height = min(all_txs, key=lambda x:abs(x-int(height)))
         # print(closest)
-
         # add the # of txs to the closest key
         # final_output[closest_height] = final_output.get(closest_height, 0) + amt
         all_txs[closest_height] = all_txs.get(closest_height, 0) + amt
 
     # print(final_output)
     # exit()
-
-    name = msg_type.replace(".json", "")
+    
     plt.plot(all_txs.keys(), all_txs.values(), label=name)    
     plt.legend(loc='upper left')
     plt.title(f'Juno Txs By Type')
-    plt.xlabel('Block height')
+    plt.xlabel('Block height (* 1 million)')
     plt.ylabel('Txs Over Time')    
     
 fig = plt.gcf()
