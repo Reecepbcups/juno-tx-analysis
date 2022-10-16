@@ -17,4 +17,4 @@ for file in os.listdir(os.path.join(current_dir, "data")):
         data.update(json.load(f))
 
 with open(os.path.join(current_dir, "all_data.json"), "w") as f:
-    json.dump(data, f, indent=4)
+    json.dump(data, f)
