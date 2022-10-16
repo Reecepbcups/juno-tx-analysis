@@ -3,12 +3,18 @@ import sys
 import json
 import httpx
 import base64
+import subprocess
 
-RPC = "https://rpc.juno.strange.love"
-LOWEST_HEIGHT = 4444463 # https://rpc.juno.strange.love/block?height=2000000
+from dotenv import load_dotenv
+load_dotenv()
+
+# RPC = 
+RPC = os.getenv("JUNO_RPC", "https://rpc.juno.strange.love")
+LOWEST_HEIGHT = int(os.getenv("LOWEST_BLOCK_HEIGHT")) # https://rpc.juno.strange.love/block?height=2000000
+HEIGHT_DATA_GROUPINGS = int(os.getenv("HEIGHT_DATA_GROUPINGS", 500))
+# print(RPC); print(LOWEST_HEIGHT)
 
 client = httpx.Client()
-
 current_dir = os.path.dirname(os.path.realpath(__file__))
 
 
@@ -16,8 +22,18 @@ current_dir = os.path.dirname(os.path.realpath(__file__))
 TOTAL_JUNO_TXS = 0
 data = {} # int(height) = {other_data_here}
 
+
+def run_cmd(cmd) -> str:
+    return subprocess.Popen(cmd, shell=True, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).stdout.read()
+
+# ensure junod is installed
+version = run_cmd("junod version")
+if len(version) == 0:
+    print("Junod not installed. Please install junod and try again.")
+    exit(1)
+
 def main():
-    global data
+    global data, HEIGHT_DATA_GROUPINGS
 
     # latest = int(get_latest_height())
     # print("Latest" + str(latest))
@@ -27,30 +43,29 @@ def main():
     spread = int(sys.argv[2]) #10k
 
     os.makedirs(os.path.join(current_dir, "data"), exist_ok=True)
-
-    save_per = 500
-    if spread < save_per:
-        save_per = spread
+    
+    if spread < HEIGHT_DATA_GROUPINGS:
+        HEIGHT_DATA_GROUPINGS = spread
     
     # loop through blocks backwards from latest to LOWEST_HEIGHT
     # for idx, block_h in enumerate(range(latest, LOWEST_HEIGHT, -1)):    
-    for idx, block_h in enumerate(range(start, start-spread, -1)):     
-        if idx % (save_per) == 0:            
+    for idx, block_h in enumerate(range(start, start-HEIGHT_DATA_GROUPINGS-1, -1)):        
+        if idx % (HEIGHT_DATA_GROUPINGS) == 0:            
             if len(data) == 0:
                 # print(f"{block_h} was empty")
                 pass
             else:
                 with open(os.path.join(current_dir, "data", f"blocks_{block_h}.json"), "w") as f:
-                    json.dump(data, f, indent=4)
+                    json.dump(data, f)
                     data = {}
-        get_block_data(block_h)
+                    print(f"Saved {block_h}")
+        get_block_data(block_h)        
 
 
 
 def get_block_data(height):
-    # global TOTAL_RAC_TXS
     global TOTAL_JUNO_TXS, data    
-    block = get_block(height)
+    block = get_block(height)    
 
     if block == -2: # height too low
         return
@@ -62,31 +77,27 @@ def get_block_data(height):
     num_txs = len(txs)
     # print(f"Block {height} has {num_txs} transactions. Time: {get_time}")
 
-    # before_rac_txs = TOTAL_RAC_TXS
-    contracts_in_block = {}
-
     # loop through txs, and decode base64
     TOTAL_JUNO_TXS += num_txs
 
-    # for tx in txs:
-    #     TOTAL_JUNO_TXS += 1
-    #     decoded = str(base64.b64decode(tx))
-    #     # check if any list_of_racoon_contracts keys are in the decoded tx
-    #     for key in list_of_racoon_contracts:
-    #         if key in decoded:
-    #             TOTAL_RAC_TXS += 1                
-    #             contracts_in_block[key] = contracts_in_block.get(key, 0) + 1
-    #             # print(f"Found {key} in {decoded}")
+    human_txs = []
+    for tx in txs:
+        try:
+            tx_json = run_cmd(f"junod tx decode {tx} --output json")         
+            human_txs.append(json.loads(tx_json))
+        except Exception as e:
+            # argument list too long = store code
+            # input(f"Error decoding tx {tx}. {e}")
+            continue
 
     # after = TOTAL_RAC_TXS - before_rac_txs
-
     data[height] = {
         "time": get_time,
-        "num_txs": num_txs,
-        "juno_txs": txs, # base64 encoded
+        "num_txs": num_txs,        
+        "decoded_txs": human_txs,
     }
 
-    if height % 500 == 0:
+    if height % HEIGHT_DATA_GROUPINGS == 0:
         print(f"[{height}] Total Juno: {TOTAL_JUNO_TXS}")
 
 
@@ -105,7 +116,8 @@ def get_block(height) -> int:
 
     try:
         resp = client.get(f"{RPC}/block?height={height}")
-        return resp.json()["result"]["block"]
+        block_data = resp.json()["result"]["block"]
+        return block_data
     except Exception as e:
         # print(f"Error getting block {height}")
         # print(f"Error getting block {height}. {e}")

@@ -2,18 +2,28 @@
 Makes commands since python has GIL bleh
 '''
 
-# https://rpc.juno.strange.love/abci_info?
-start_height = 4846600
-end_height = 4446200 # 27 days ago
-spread = 5_000
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
+lowest_height = int(os.getenv("LOWEST_BLOCK_HEIGHT"))
+end_height = lowest_height+10_000
+spread = int(os.getenv("HEIGHT_DATA_GROUPINGS", 500))
 
 # loop between start and end height and make the commands
 output = []
-for height in range(start_height, end_height, -spread):
+for height in range(end_height, lowest_height-1, -spread):
     # print(f"python3 main.py {height} {spread}")    
     # output.append(f"python3 main.py {height} {spread} &")
-    if height - spread < end_height:
-        spread = height - end_height
+    # if height - spread < end_height:
+    #     spread = height - end_height
+
+    if height - spread < lowest_height:
+        spread = height - lowest_height
+
+    if spread == 0:
+        continue
+
     output.append(f"python3 main.py {height} {spread} &") # kill python3 to stop since httpx & background
 
 # save output to txt file in this dir
