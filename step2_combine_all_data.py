@@ -1,6 +1,8 @@
 '''
 Loop through all data files & save the data to one big dict file
 (Was saved in chunks incase errors happened.)
+
+We use this for step3 and step999 graphing data blocks
 '''
 
 import os
