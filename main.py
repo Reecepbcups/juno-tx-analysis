@@ -67,6 +67,19 @@ def main():
 import multiprocessing as mp
 p = mp.Pool(mp.cpu_count())
 
+IGNORED_MESSAGES = {
+    "ibc.core.channel.v1.MsgChannelOpenAck": None,
+    "ibc.core.channel.v1.MsgChannelOpenInit": None,
+    "ibc.core.client.v1.MsgCreateClient": None,
+    "cosmos.slashing.v1beta1.MsgUnjail": None,
+    "cosmos.staking.v1beta1.MsgEditValidator": None,
+    "cosmos.staking.v1beta1.MsgCreateValidator": None,
+    "cosmwasm.wasm.v1.MsgStoreCode": None, # already ignored right?
+    "ibc.core.client.v1.MsgUpdateClient": None,
+    "cosmos.gov.v1beta1.MsgSubmitProposal": None,
+    "cosmos.gov.v1beta1.MsgDeposit": None,
+}
+
 def get_block_data(height):
     global TOTAL_JUNO_TXS, data    
     block = get_block(height)    
@@ -90,15 +103,14 @@ def get_block_data(height):
             tx_json = json.loads(run_cmd(f"junod tx decode {tx} --output json"))            
             messages = tx_json['body']["messages"]            
             for msg in messages:        
-                if "/ibc.core.client.v1.MsgUpdateClient" in msg["@type"]: # skip these
+                if msg["@type"] in IGNORED_MESSAGES: # skip these
                     continue
                 human_txs.append(msg)          
         except:
             # argument list too long = store code
             # input(f"Error decoding tx {tx}. {e}")            
             pass   
-
-    # after = TOTAL_RAC_TXS - before_rac_txs
+    
     data[height] = {
         "time": get_time,
         "num_txs": num_txs,        
