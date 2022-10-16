@@ -8,58 +8,66 @@ import matplotlib.pyplot as plt
 
 # loop through all msgs folder
 current_dir = os.path.dirname(os.path.realpath(__file__))
+total_msgs_file = f"{current_dir}/json/total_messages.json"
+
+# make any dirs in path if they don't exist
+for file in [total_msgs_file]:
+    os.makedirs(os.path.dirname(file), exist_ok=True)    
+    open(file, "w").close() # clear file
 
 total_messages = {}
+lowest_height = -1
+highest_height = -1
 
-# savesa msg amoutns by height to file
+def set_height(height):
+    global lowest_height, highest_height
+    height = int(height)
+    if lowest_height == -1:
+        lowest_height = height
+    if highest_height == -1:
+        highest_height = height
+    if height < lowest_height:
+        lowest_height = height
+    if height > highest_height:
+        highest_height = height    
+
+# saves msg amounts by height to file
 for file in os.listdir(f"{current_dir}/msgs"):
-    if file.endswith(".json"):
-        print(f"Processing {file}")
-        with open(f"{current_dir}/msgs/{file}", "r") as f:
-            data = json.load(f)     
-
-
-        values_at_heights = {}
-        for height, txs in data.items(): 
-            # input(f"{height}, {len(txs)}")     
-            # total_messages["total"] = total_messages.get("total", 0) + len(txs)
-            
-            num_of_txs = len(txs)
-            total_messages[file] = {}
-            # break
-
-            # for each height, set height key = num of txs
-            # total_messages[file][int(height)] = num_of_txs            
-            values_at_heights[int(height)] = num_of_txs
-
-        total_messages[file] = values_at_heights                
-# 1,221,567 Total Messages
-# dump to file, is in graphs/ now
-# {'total': 1221567, 'cosmos.staking.v1beta1.MsgEditValidator.json': 17, 'cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward.json': 252642, 'cosmos.staking.v1beta1.MsgDelegate.json': 172595, 'cosmos.authz.v1beta1.MsgGrant.json': 2070, 'cosmos.gov.v1beta1.MsgSubmitProposal.json': 2, 'cosmos.slashing.v1beta1.MsgUnjail.json': 6, 'other.json': 121783, 'ibc.core.client.v1.MsgCreateClient.json': 20, 'ibc.applications.transfer.v1.MsgTransfer.json': 61643, 'cosmos.bank.v1beta1.MsgSend.json': 52246, 'cosmos.gov.v1beta1.MsgDeposit.json': 18, 'cosmos.authz.v1beta1.MsgExec.json': 32, 'cosmos.staking.v1beta1.MsgUndelegate.json': 4678, 'cosmos.staking.v1beta1.MsgCreateValidator.json': 7, 'cosmwasm.wasm.v1.MsgMigrateContract.json': 25, 'cosmwasm.wasm.v1.MsgInstantiateContract.json': 508, 'ibc.core.channel.v1.MsgChannelOpenAck.json': 5, 'ibc.core.channel.v1.MsgChannelOpenInit.json': 5, 'cosmos.staking.v1beta1.MsgBeginRedelegate.json': 8492, 'cosmwasm.wasm.v1.MsgExecuteContract.json': 544773}
-with open(f"{current_dir}/json/total_messages.json", "w") as f:
-    json.dump(total_messages, f, indent=4)
-
-filename = f"{current_dir}/json/messages_by_heights.json"
-# with open(filename, "w") as f:
-#     json.dump(total_messages, f)
-
-# load filename to memory
-with open(filename, "r") as f:
-    total_messages = json.load(f)
-
-
-final_output = {}
-lowlow = 4_450_000
-highhigh = 4_850_000
-for k, v in total_messages.items():
-    # sorted_heights = sorted(v.keys(), key=lambda x: x[0])
-    # print(sorted_heights)
-    if len(v.keys()) == 0:
+    if not file.endswith(".json"):
         continue
 
-    all_txs = {k: 0 for k in range(lowlow, highhigh, 5_000)}
+    print(f"Processing {file}")
+    with open(f"{current_dir}/msgs/{file}", "r") as f:
+        msg_list = json.load(f)    
 
-    for height, amt in v.items():
+    values_at_heights = {}
+    for msg in msg_list:        
+        height = msg["height"]   
+        set_height(height)
+        values_at_heights[height] = values_at_heights.get(height, 0) + 1
+    total_messages[file] = values_at_heights
+
+with open(total_msgs_file, "w") as f:
+    json.dump(total_messages, f)
+
+# exit()
+# TODO calu
+
+final_output = {}
+# lowlow = 4_450_000
+# highhigh = 4_850_000
+range_jumps = 5_000 # maybe take a % of the highest height - lowest height
+
+for msg_type, heights_data in total_messages.items():
+    # {'4801196': 1, '4801189': 1, '4800030': 1}
+    # sorted_heights = sorted(v.keys(), key=lambda x: x[0])
+    # print(sorted_heights)
+    if len(heights_data.keys()) == 0:
+        continue
+
+    all_txs = {k: 0 for k in range(lowest_height, highest_height, range_jumps)}
+
+    for height, amt in heights_data.items():
         # find the closest key to k
         closest_height = min(all_txs, key=lambda x:abs(x-int(height)))
         # print(closest)
@@ -71,7 +79,7 @@ for k, v in total_messages.items():
     # print(final_output)
     # exit()
 
-    name = k.replace(".json", "")
+    name = msg_type.replace(".json", "")
     plt.plot(all_txs.keys(), all_txs.values(), label=name)    
     plt.legend(loc='upper left')
     plt.title(f'Juno Txs By Type')
@@ -80,4 +88,4 @@ for k, v in total_messages.items():
     
 fig = plt.gcf()
 fig.set_size_inches(18.5, 10.5)
-fig.savefig('juno_txs_over_time.png', dpi=100)
+fig.savefig('test-juno_txs_over_time.png', dpi=100)

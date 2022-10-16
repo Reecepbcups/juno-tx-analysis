@@ -47,4 +47,5 @@ for msg_type in ALL_MSGS.keys():
     loc = os.path.join(current_dir, msgs_dir, f"{msg_type[1:]}.json")
     with open(loc, 'w') as f:
         print(f'Dumping {msg_type} to {loc}...')
-        json.dump(ALL_MSGS[msg_type], f, indent=4)
+        # json.dump(ALL_MSGS[msg_type], f, indent=4)
+        json.dump(ALL_MSGS[msg_type], f)
