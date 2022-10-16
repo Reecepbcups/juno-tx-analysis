@@ -72,7 +72,7 @@ for file in os.listdir(f"{current_dir}/msgs"):
 with open(total_msgs_file, "w") as f:
     json.dump(total_messages, f)
 
-# exit()
+exit()
 
 final_output = {}
 range_jumps = 5_000

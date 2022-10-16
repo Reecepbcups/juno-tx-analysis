@@ -1,0 +1,19 @@
+Total msgs: 31629
+Lowest height: 4800001 & Highest height: 4805000. Spread: 4999
+
+/cosmwasm.wasm.v1.MsgExecuteContract                                        13811      (43.67%)
+/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward                     8982       (28.40%)
+/cosmos.staking.v1beta1.MsgDelegate                                         2740       (8.66%)
+/cosmos.authz.v1beta1.MsgExec                                               2518       (7.96%)
+/ibc.core.channel.v1.MsgAcknowledgement                                     935        (2.96%)
+/cosmos.bank.v1beta1.MsgSend                                                908        (2.87%)
+/ibc.core.channel.v1.MsgRecvPacket                                          751        (2.37%)
+/ibc.applications.transfer.v1.MsgTransfer                                   748        (2.36%)
+/cosmos.staking.v1beta1.MsgBeginRedelegate                                  75         (0.24%)
+/cosmos.staking.v1beta1.MsgUndelegate                                       69         (0.22%)
+/cosmos.authz.v1beta1.MsgGrant                                              42         (0.13%)
+/cosmos.distribution.v1beta1.MsgWithdrawValidatorCommission                 34         (0.11%)
+/cosmwasm.wasm.v1.MsgInstantiateContract                                    7          (0.02%)
+/cosmos.authz.v1beta1.MsgRevoke                                             5          (0.02%)
+/cosmwasm.wasm.v1.MsgStoreCode                                              3          (0.01%)
+/cosmos.staking.v1beta1.MsgEditValidator                                    1          (0.00%)
